@@ -1,0 +1,159 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" style="position: fixed; top: 0; width: 100%;">
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#professors">
+          Professor Actions
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#students">
+          Student Actions
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+
+<div class="row mx-auto">
+  <div class="col-md-8 mx-auto">
+    <h1 id="professors">Professors</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>
+            Professor ID
+          </th>
+          <th> First Name </th>
+          <th> Last Name </th>
+          <th> Teaching </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let professor of professors">
+          <tr>
+            <td>{{ professor.professorId }}</td>
+            <td> {{ professor.firstName }}</td>
+            <td> {{ professor.lastName }}</td>
+            <td>
+              <ul>
+                <ng-container *ngFor="let course of professor.courses">
+                  <li>{{ course.courseName }}, Semester {{ course.semester }} </li>
+                  <ul *ngIf="course.students">
+                    <ng-container *ngFor="let student of course.students">
+                      <li>{{ student.firstName }} {{ student.lastName }} </li>
+                      <ul *ngIf="course.grades">
+                        <ng-container *ngFor="let grade of course.grades">
+                          <ng-container *ngIf="grade.student.studentId === student.studentId">
+                            <li>Grade: {{ grade.value }} </li>
+                          </ng-container>
+                        </ng-container>
+                      </ul>
+                      <ul *ngIf="!course.grades">
+                        <li>
+                          Grade: none
+                        </li>
+                      </ul>
+                    </ng-container>
+                  </ul>
+                  <ul *ngIf="!course.students || course.students.length === 0">
+                    <li>
+                      Students: none
+                    </li>
+                  </ul>
+                </ng-container>
+              </ul>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <div style="display: flex;">
+      <div style="width: 50%; padding-left:50px">
+        <h1>Assign Professor to Course</h1>
+        <div>
+          <label for="professorIdCourse">Professor ID:</label>
+          <input id="professorIdCourse" type="text" [(ngModel)]="professorId">
+        </div>
+        <div>
+          <label for="courseId">Course ID:</label>
+          <input id="courseId" type="number" [(ngModel)]="courseId">
+        </div>
+        <button (click)="assignProfessorToCourse()">Assign Professor</button>
+      </div>
+      <div style="width: 50%;">
+        <h1>Add grade to a student</h1>
+        <form (submit)="addGrade()">
+          <label>Course ID:</label>
+          <input [(ngModel)]="courseId" name="courseId" type="number" required>
+          <br>
+          <label>Student ID:</label>
+          <input [(ngModel)]="studentId" name="studentId" type="text" required>
+          <br>
+          <label>Grade Value:</label>
+          <input [(ngModel)]="value" name="value" type="number" required>
+          <br>
+          <label>Professor ID:</label>
+          <input [(ngModel)]="professorId" name="professorId" type="text" required>
+          <br>
+          <button type="submit">Add Grade</button>
+        </form>
+      </div>
+    </div>
+    <hr />
+    <div style="height: 100px;"></div>
+
+
+    <h1 id="students">Students</h1>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Enrolled Courses</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let student of students">
+          <tr>
+            <td>{{ student.studentId }}</td>
+            <td>{{ student.firstName }}</td>
+            <td>{{ student.lastName }}</td>
+            <td>
+              <ul>
+                <ng-container *ngFor="let course of student.courses">
+                  <li>{{ course.courseName }}, Semester {{ course.semester }}</li>
+                </ng-container>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <ng-container *ngFor="let grade of student.grades">
+                  <li>{{ grade.value }}</li>
+                </ng-container>
+              </ul>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <div>
+      <h1>Subscribe a Student to a Course</h1>
+      <div>
+        <label for="studentId">Student ID:</label>
+        <input id="studentId" type="text" [(ngModel)]="studentId">
+      </div>
+      <div>
+        <label for="courseId">Course ID:</label>
+        <input id="courseId" type="number" [(ngModel)]="courseId">
+      </div>
+      <button (click)="subscribeStudentToCourse()">Subscribe</button>
+    </div>
+    <br />
